@@ -19,6 +19,7 @@ plugins {
 	id("io.spring.dependency-management") version "1.1.4"
 	kotlin("jvm") version "1.9.20"
 	kotlin("plugin.spring") version "1.9.20"
+	kotlin("plugin.jpa") version "1.9.20"
 	id("org.jlleitschuh.gradle.ktlint") version "11.3.1"
 }
 
@@ -31,6 +32,7 @@ subprojects {
 	apply {
 		plugin("kotlin")
 		plugin("kotlin-spring") // all-open
+		plugin("org.jetbrains.kotlin.plugin.jpa") // no-arg
 
 		plugin("org.springframework.boot")
 		plugin("io.spring.dependency-management")
@@ -39,7 +41,9 @@ subprojects {
 	dependencies {
 		implementation("org.springframework.boot:spring-boot-starter")
 		implementation("org.springframework.boot:spring-boot-starter-webflux")
-//		implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+
+		implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+		runtimeOnly("org.jetbrains.kotlin:kotlin-reflect") // reflection
 
 		developmentOnly("org.springframework.boot:spring-boot-docker-compose")
 		developmentOnly("org.springframework.boot:spring-boot-devtools")

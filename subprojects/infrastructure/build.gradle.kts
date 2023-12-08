@@ -1,5 +1,6 @@
 dependencies {
 	compileOnly(project(":domain"))
+	runtimeOnly("com.h2database:h2")
 }
 
 tasks {

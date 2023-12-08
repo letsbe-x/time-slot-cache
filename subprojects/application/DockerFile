@@ -1,0 +1,11 @@
+FROM openjdk:17-jdk-slim AS builder
+
+WORKDIR /app
+COPY . .
+ENV TZ Asia/Seoul
+ENV JAVA_MAIN_CLASS com.letsbe.application.ServerApplicationKt
+RUN ./gradlew clean bootJar
+
+FROM openjdk:17-jdk-slim
+COPY --from=builder build/libs/*.jar app.jar
+ENTRYPOINT ["java","-jar","/application.jar"]

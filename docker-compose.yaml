@@ -1,0 +1,28 @@
+version: "3"
+
+networks:
+    spring-docker-network:
+        driver: bridge
+
+#services:
+#    app:
+#        container_name: spring-app # Name of the container
+#        build:
+#            context: ./subprojects/application # Path to the Dockerfile
+#            dockerfile: Dockerfile # Name of the Dockerfile
+#        image: spring-app # Name of the image
+#        volumes:
+#            - ./app:/app # Mounting the app directory
+#        working_dir: /app # Working directory
+#        ports:
+#            - "8080:8080" # Port mapping
+#        command: ["./gradlew", "bootRun"]
+##        depends_on:
+##            - db # Depends on the db container
+#        restart:
+#            always
+#        networks:
+#            - spring-docker-network
+
+volumes:
+    data: {}

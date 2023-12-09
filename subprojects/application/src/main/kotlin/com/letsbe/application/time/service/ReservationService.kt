@@ -1,15 +1,17 @@
 package com.letsbe.application.time.service
 
-import com.letsbe.application.time.dto.CreateReservationRequest
-import com.letsbe.application.time.dto.UpdateReservationRequest
+import com.letsbe.application.time.dto.request.CreateReservationRequest
+import com.letsbe.application.time.dto.request.UpdateReservationRequest
 import com.letsbe.domain.time.aggregate.ReservationDo
 import com.letsbe.domain.time.aggregate.ReservationId
 import com.letsbe.domain.time.repository.ReservationDoRepository
+import com.letsbe.domain.time.repository.TimeSchedulerDoRepository
 import org.springframework.stereotype.Service
 
 @Service
 class ReservationService(
-	private val reservationDoRepository: ReservationDoRepository
+	private val reservationDoRepository: ReservationDoRepository,
+	private val timeSchedulerDoRepository: TimeSchedulerDoRepository
 ) {
 	fun getReservation(reservationId: ReservationId): ReservationDo {
 		return reservationDoRepository.getById(reservationId)

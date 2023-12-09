@@ -7,6 +7,7 @@ import com.letsbe.infrastructure.time.mapper.ReservationMapper
 import com.letsbe.infrastructure.time.repository.ReservationEntityRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
+import java.time.Instant
 
 @Component
 class ReservationDoRepositoryImpl : ReservationDoRepository {
@@ -45,5 +46,11 @@ class ReservationDoRepositoryImpl : ReservationDoRepository {
 
 		return reservationEntityRepository.save(reservationEntity)
 			.run(ReservationMapper::toDo)
+	}
+
+	override fun findByInterval(startAt: Instant, endAt: Instant): List<ReservationDo> {
+		val reservationEntityList = reservationEntityRepository.findReservationsOverlappingWithDay(startAt, endAt)
+
+		return reservationEntityList.map(ReservationMapper::toDo)
 	}
 }

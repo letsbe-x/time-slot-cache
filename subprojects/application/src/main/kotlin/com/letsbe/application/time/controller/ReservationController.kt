@@ -1,7 +1,7 @@
 package com.letsbe.application.time.controller
 
-import com.letsbe.application.time.dto.CreateReservationRequest
-import com.letsbe.application.time.dto.UpdateReservationRequest
+import com.letsbe.application.time.dto.request.CreateReservationRequest
+import com.letsbe.application.time.dto.request.UpdateReservationRequest
 import com.letsbe.application.time.service.ReservationService
 import com.letsbe.domain.time.aggregate.ReservationDo
 import com.letsbe.domain.time.aggregate.ReservationId

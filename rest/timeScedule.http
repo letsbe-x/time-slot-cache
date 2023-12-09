@@ -1,0 +1,5 @@
+### Time Schedule 조회
+GET /time-schedule
+    ?date=2023-12-09
+Host: {{host}}
+Content-Type: application/json

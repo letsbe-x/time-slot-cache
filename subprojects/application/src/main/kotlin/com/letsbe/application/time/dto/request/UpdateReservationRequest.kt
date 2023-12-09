@@ -1,4 +1,4 @@
-package com.letsbe.application.time.dto
+package com.letsbe.application.time.dto.request
 
 import java.time.Instant
 

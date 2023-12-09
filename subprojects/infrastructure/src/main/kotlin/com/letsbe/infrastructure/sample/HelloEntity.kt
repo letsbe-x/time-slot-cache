@@ -11,8 +11,8 @@ import jakarta.persistence.Table
 @Table(name = "hello")
 @Entity
 class HelloEntity(
-    id: HelloId? = null,
-    nickName: String,
+	id: HelloId? = null,
+	nickName: String
 ) {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

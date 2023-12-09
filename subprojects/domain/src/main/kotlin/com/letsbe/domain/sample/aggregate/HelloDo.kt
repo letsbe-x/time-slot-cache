@@ -1,9 +1,9 @@
 package com.letsbe.domain.sample.aggregate
 
 typealias HelloId = Long
-data class HelloDo (
+data class HelloDo(
 	val id: HelloId? = null,
-	val nickName: String,
+	val nickName: String
 ) {
 	override fun toString(): String {
 		return "Hello $nickName!"
@@ -11,7 +11,7 @@ data class HelloDo (
 
 	companion object {
 		val default = HelloDo(
-			nickName = "World",
+			nickName = "World"
 		)
 	}
 }

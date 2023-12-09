@@ -8,8 +8,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories
 @SpringBootApplication(
 	scanBasePackages = ["com.letsbe"]
 )
-@EntityScan(basePackages = ["com.letsbe.infrastructure.entity"])
-@EnableJpaRepositories(basePackages = ["com.letsbe.infrastructure.repository"])
+@EntityScan(basePackages = ["com.letsbe.infrastructure"])
+@EnableJpaRepositories(basePackages = ["com.letsbe.infrastructure"])
 class ServerApplication
 
 fun main(args: Array<String>) {

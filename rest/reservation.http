@@ -1,0 +1,29 @@
+### 예약 조회
+GET http://localhost:8080/reservation/{{reservationId}}
+Host: {{host}}
+Content-Type: application/json
+
+### 예약 생성
+POST /reservation
+Host: {{host}}
+Content-Type: application/json
+
+{
+	"startAt": "2023-12-09T12:30:00.00Z",
+	"endAt": "2023-12-09T13:30:00.00Z"
+}
+
+### 예약 변경
+PATCH http://localhost:8080/reservation/{{reservationId}}
+Host: {{host}}
+Content-Type: application/json
+
+{
+  "startAt": "2023-12-09T12:40:00.00Z",
+  "endAt": "2023-12-09T13:30:00.00Z"
+}
+
+### 예약 탈퇴
+DELETE http://localhost:8080/reservation/{{reservationId}}
+Host: {{host}}
+Content-Type: application/json

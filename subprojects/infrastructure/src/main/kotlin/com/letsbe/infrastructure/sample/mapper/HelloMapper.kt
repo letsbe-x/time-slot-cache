@@ -10,5 +10,4 @@ object HelloMapper {
 			nickName = helloEntity.nickName
 		)
 	}
-
 }

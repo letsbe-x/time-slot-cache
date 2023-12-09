@@ -12,7 +12,7 @@ class HelloService {
 	lateinit var helloDoRepository: HelloDoRepository
 
 	fun sayHello(searchName: String?): String {
-		return searchName?.let{
+		return searchName?.let {
 			helloDoRepository.getHello(searchName)?.toString()
 		} ?: HelloDo.default.toString()
 	}

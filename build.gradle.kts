@@ -36,16 +36,17 @@ subprojects {
 
 		plugin("org.springframework.boot")
 		plugin("io.spring.dependency-management")
+		plugin("org.jlleitschuh.gradle.ktlint")
 	}
 
 	dependencies {
 		implementation("org.springframework.boot:spring-boot-starter")
 		implementation("org.springframework.boot:spring-boot-starter-webflux")
-
 		implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+
 		runtimeOnly("org.jetbrains.kotlin:kotlin-reflect") // reflection
 
-		developmentOnly("org.springframework.boot:spring-boot-docker-compose")
+// 		developmentOnly("org.springframework.boot:spring-boot-docker-compose")
 		developmentOnly("org.springframework.boot:spring-boot-devtools")
 
 		testImplementation("org.springframework.boot:spring-boot-starter-test")

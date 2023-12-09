@@ -5,7 +5,7 @@ import com.letsbe.infrastructure.time.entity.ReservationEntity
 
 object ReservationMapper {
 	fun toDo(reservationEntity: ReservationEntity): ReservationDo {
-		return ReservationDo(
+		return ReservationDo.create(
 			id = reservationEntity.id!!,
 			interval = reservationEntity.startAt ..< reservationEntity.endAt
 		)

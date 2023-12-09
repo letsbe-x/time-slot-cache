@@ -32,8 +32,12 @@ class ReservationController(
 	fun createReservation(
 		@RequestBody createReservationRequest: CreateReservationRequest
 	): ResponseEntity<ReservationDo> {
+		val interval = with(createReservationRequest) {
+			startAt ..< endAt
+		}
+
 		return ResponseEntity.ok(
-			reservationService.createReservation(createReservationRequest)
+			reservationService.createReservation(interval)
 		)
 	}
 
@@ -42,8 +46,12 @@ class ReservationController(
 		@PathVariable reservationId: ReservationId,
 		@RequestBody updateReservationRequest: UpdateReservationRequest
 	): ResponseEntity<ReservationDo> {
+		val interval = with(updateReservationRequest) {
+			startAt ..< endAt
+		}
+
 		return ResponseEntity.ok(
-			reservationService.updateReservation(reservationId, updateReservationRequest)
+			reservationService.updateReservation(reservationId, interval)
 		)
 	}
 

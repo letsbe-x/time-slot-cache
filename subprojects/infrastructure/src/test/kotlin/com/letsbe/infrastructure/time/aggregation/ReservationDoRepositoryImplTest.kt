@@ -71,4 +71,15 @@ class ReservationDoRepositoryImplTest : AbstractRepositoryTest() {
 
 		assertEquals(reservationDo, result)
 	}
+
+	@Test
+	fun `update should throw exception when reservation does not exist`() {
+		val reservationId = 1L
+		val reservationDo = ReservationDo(id = reservationId, interval = Instant.now() ..< Instant.now().plusSeconds(3600))
+		`when`(reservationEntityRepository.findById(reservationId)).thenReturn(Optional.empty())
+
+		assertThrows<NoSuchElementException> {
+			reservationDoRepositoryImpl.update(reservationDo)
+		}
+	}
 }

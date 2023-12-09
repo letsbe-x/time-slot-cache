@@ -7,7 +7,7 @@ import java.time.Instant
 interface ReservationDoRepository {
 	fun getById(reservationId: ReservationId): ReservationDo
 
-	fun create(reservation: ReservationDo): ReservationDo
+	fun create(reservationDo: ReservationDo): ReservationDo
 	fun deleteById(reservationId: ReservationId)
 	fun update(reservationDo: ReservationDo): ReservationDo
 	fun findByInterval(startAt: Instant, endAt: Instant): List<ReservationDo>

@@ -10,7 +10,7 @@ Content-Type: application/json
 
 {
 	"startAt": "2023-12-09T12:30:00.00Z",
-	"endAt": "2023-12-09T13:30:00.00Z"
+	"endAt": "2023-12-09T13:00:00.00Z"
 }
 
 ### 예약 변경
@@ -19,11 +19,11 @@ Host: {{host}}
 Content-Type: application/json
 
 {
-  "startAt": "2023-12-09T12:40:00.00Z",
-  "endAt": "2023-12-09T13:30:00.00Z"
+  "startAt": "2023-12-09T10:00:00.00Z",
+  "endAt": "2023-12-09T11:50:00.00Z"
 }
 
-### 예약 탈퇴
+### 예약 취소
 DELETE http://localhost:8080/reservation/{{reservationId}}
 Host: {{host}}
 Content-Type: application/json

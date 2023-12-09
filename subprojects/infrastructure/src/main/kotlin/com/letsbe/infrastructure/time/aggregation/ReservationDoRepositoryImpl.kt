@@ -21,8 +21,14 @@ class ReservationDoRepositoryImpl : ReservationDoRepository {
 			.run(ReservationMapper::toDo)
 	}
 
-	override fun create(reservation: ReservationDo): ReservationDo {
-		return reservationEntityRepository.save(ReservationMapper.toEntity(reservation))
+	override fun findByInterval(startAt: Instant, endAt: Instant): List<ReservationDo> {
+		val reservationEntityList = reservationEntityRepository.findReservationsOverlappingWithDay(startAt, endAt)
+
+		return reservationEntityList.map(ReservationMapper::toDo)
+	}
+
+	override fun create(reservationDo: ReservationDo): ReservationDo {
+		return reservationEntityRepository.save(ReservationMapper.toEntity(reservationDo))
 			.run(ReservationMapper::toDo)
 	}
 
@@ -46,11 +52,5 @@ class ReservationDoRepositoryImpl : ReservationDoRepository {
 
 		return reservationEntityRepository.save(reservationEntity)
 			.run(ReservationMapper::toDo)
-	}
-
-	override fun findByInterval(startAt: Instant, endAt: Instant): List<ReservationDo> {
-		val reservationEntityList = reservationEntityRepository.findReservationsOverlappingWithDay(startAt, endAt)
-
-		return reservationEntityList.map(ReservationMapper::toDo)
 	}
 }

@@ -1,6 +1,7 @@
 package com.letsbe.infrastructure.time.aggregation
 
 import com.letsbe.domain.time.aggregate.ReservationDo
+import com.letsbe.domain.time.aggregate.ReservationId
 import com.letsbe.domain.time.aggregate.TimeSchedulerDo
 import com.letsbe.domain.time.repository.ReservationDoRepository
 import com.letsbe.domain.time.repository.TimeSchedulerDoRepository
@@ -34,16 +35,16 @@ class TimeSchedulerDoRepositoryImpl : TimeSchedulerDoRepository {
 			}
 	}
 
-	override fun findByDate(date: Date): TimeSchedulerDo {
+	override fun findByDate(date: Date, excludeReservationId: ReservationId?): TimeSchedulerDo {
 		val dayStart = date.toInstant()
 		val dayEnd = dayStart.plus(1, ChronoUnit.DAYS)
 
 		val reservationDoList = reservationDoRepository.findByInterval(dayStart, dayEnd)
 
 		val timeSchedule = TreeMap<Instant, ReservationDo>()
-		reservationDoList.forEach {
-			timeSchedule[it.interval.start] = it
-		}
+		reservationDoList
+			.filter { it.id != excludeReservationId }
+			.forEach { timeSchedule[it.interval.start] = it }
 
 		return TimeSchedulerDo(date, timeSchedule)
 	}

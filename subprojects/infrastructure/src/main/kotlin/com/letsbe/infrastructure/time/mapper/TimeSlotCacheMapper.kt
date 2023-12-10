@@ -1,8 +1,8 @@
 package com.letsbe.infrastructure.time.mapper
 
-import Constants.DISABLE
-import Constants.ENABLE
-import Constants.SLOT_SIZE
+import Constants.TimeSlot.DISABLE
+import Constants.TimeSlot.ENABLE
+import Constants.TimeSlot.SLOT_SIZE
 import java.util.BitSet
 
 object TimeSlotCacheMapper {

@@ -1,10 +1,12 @@
 package com.letsbe.domain.time.cache
 
-import Constants.SLOT_SIZE
-import Constants.TIME_SLOT_UNIT_MINUTE
-import Constants.nextIndex
+import Constants.TimeSlot.NOT_FOUND_BIT
+import Constants.TimeSlot.SLOT_SIZE
+import Constants.TimeSlot.TIME_SLOT_UNIT_MINUTE
+import Constants.TimeSlot.nextIndex
 import java.time.Duration
 import java.time.Instant
+import java.time.temporal.ChronoUnit
 import java.util.BitSet
 
 data class TimeSlotCache(
@@ -14,17 +16,30 @@ data class TimeSlotCache(
 	val key: String by lazy { "time-slot:${baseTime.toEpochMilli()}" }
 	val value: BitSet = slot
 
+	fun isAvailable(interval: OpenEndRange<Instant>): Boolean {
+		val startIndex = calculateIndex(interval.start)
+		val endIndex = calculateIndex(interval.endExclusive)
+
+		// endIndex는 범위의 끝을 포함하지 않으므로, 실제 체크할 때는 endIndex - 1까지만 체크
+		// nextSetBit를 사용하여 주어진 범위 내에서 설정된 첫 번째 비트의 인덱스를 찾음
+		val nextSetBitIndex = slot.nextSetBit(startIndex)
+
+		// nextSetBitIndex가 endIndex보다 작거나 같으면, 해당 범위 내에 설정된 비트가 있음을 의미
+		return nextSetBitIndex == NOT_FOUND_BIT || nextSetBitIndex >= endIndex
+	}
+
 	fun deserialize(): Map<Instant, OpenEndRange<Instant>> {
 		val timeSlots = mutableMapOf<Instant, OpenEndRange<Instant>>()
-		var startIndex = findNextSetBit(0)
+		var startIndex = slot.nextSetBit(0)
 
-		while (startIndex < slot.size()) {
+		while (startIndex != NOT_FOUND_BIT && startIndex < slot.size()) {
 			val start = calculateInstant(startIndex)
 			// 끝 시간을 다음 10분 간격의 시작으로 설정
-			val endIndex = findNextClearBit(startIndex).nextIndex()
+			val endIndex = slot.nextClearBit(startIndex).nextIndex()
 			val end = calculateInstant(endIndex)
 			timeSlots[start] = start ..< end
-			startIndex = findNextSetBit(endIndex)
+
+			startIndex = slot.nextSetBit(endIndex)
 		}
 
 		return timeSlots
@@ -44,22 +59,8 @@ data class TimeSlotCache(
 		return bitSet
 	}
 
-	private fun findNextSetBit(fromIndex: Int): Int {
-		for (i in fromIndex until slot.size()) {
-			if (slot[i]) return i
-		}
-		return slot.size()
-	}
-
-	private fun findNextClearBit(fromIndex: Int): Int {
-		for (i in fromIndex until slot.size()) {
-			if (!slot[i]) return i
-		}
-		return slot.size()
-	}
-
 	private fun calculateInstant(index: Int): Instant {
-		return baseTime.plus(Duration.ofMinutes((index * TIME_SLOT_UNIT_MINUTE).toLong()))
+		return baseTime.plus((index * TIME_SLOT_UNIT_MINUTE).toLong(), ChronoUnit.MINUTES)
 	}
 
 	private fun calculateIndex(instant: Instant): Int {

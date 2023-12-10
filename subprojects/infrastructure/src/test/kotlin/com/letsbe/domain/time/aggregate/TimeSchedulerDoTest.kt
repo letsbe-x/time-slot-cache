@@ -12,25 +12,12 @@ class TimeSchedulerDoTest {
 	@Test
 	fun `isAvailable should return true when the time schedule is empty`() {
 		val date = Date.from(Instant.now().truncatedTo(ChronoUnit.DAYS))
-		val timeSchedulerDo = TimeSchedulerDo(date, TreeMap())
+		val timeSchedulerDo = TimeSchedulerDo(TreeMap())
 		val interval = date.toInstant() ..< date.toInstant().plus(1, ChronoUnit.DAYS)
 
 		val result = timeSchedulerDo.isAvailable(interval)
 
 		assertThat(result).isTrue()
-	}
-
-	@Test
-	fun `isAvailable should return false when the interval is not within the date range`() {
-		val date = Date.from(Instant.now().truncatedTo(ChronoUnit.DAYS))
-		val timeSchedulerDo = TimeSchedulerDo(date, TreeMap())
-		val beforeInterval = date.toInstant().minus(1, ChronoUnit.MINUTES) ..< date.toInstant().plus(1, ChronoUnit.DAYS)
-		val result1 = timeSchedulerDo.isAvailable(beforeInterval)
-		assertThat(result1).isFalse()
-
-		val afterInterval = date.toInstant() ..< date.toInstant().plus(1, ChronoUnit.DAYS).plus(1, ChronoUnit.MINUTES)
-		val result2 = timeSchedulerDo.isAvailable(afterInterval)
-		assertThat(result2).isFalse()
 	}
 
 	@Test

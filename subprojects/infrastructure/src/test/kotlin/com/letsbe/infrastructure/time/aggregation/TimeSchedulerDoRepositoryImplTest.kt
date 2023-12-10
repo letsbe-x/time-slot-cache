@@ -34,11 +34,8 @@ class TimeSchedulerDoRepositoryImplTest : AbstractRepositoryTest() {
 		`when`(reservationDoRepository.findByInterval(dayStart, dayEnd))
 			.thenReturn(listOf(reservationDo1, reservationDo2))
 
-		val timeSchedulerDoList = timeSchedulerDoRepository.findByInterval(startAt, endAt)
+		val timeSchedulerDo = timeSchedulerDoRepository.findByInterval(startAt..<endAt)
 
-		assertThat(timeSchedulerDoList.size).isEqualTo(1)
-		val timeSchedulerDo = timeSchedulerDoList.first()
-		assertThat(timeSchedulerDo.date).isEqualTo(Date.from(dayStart))
 		assertThat(timeSchedulerDo.timeSchedule.size).isEqualTo(2)
 		assertThat(timeSchedulerDo.timeSchedule[reservationDo1.interval.start]).isEqualTo(reservationDo1)
 		assertThat(timeSchedulerDo.timeSchedule[reservationDo2.interval.start]).isEqualTo(reservationDo2)
@@ -58,7 +55,6 @@ class TimeSchedulerDoRepositoryImplTest : AbstractRepositoryTest() {
 
 		val timeSchedulerDo = timeSchedulerDoRepository.findByDate(date)
 
-		assertThat(timeSchedulerDo.date).isEqualTo(date)
 		assertThat(timeSchedulerDo.timeSchedule.size).isEqualTo(2)
 		assertThat(timeSchedulerDo.timeSchedule[reservationDo1.interval.start]).isEqualTo(reservationDo1)
 		assertThat(timeSchedulerDo.timeSchedule[reservationDo2.interval.start]).isEqualTo(reservationDo2)

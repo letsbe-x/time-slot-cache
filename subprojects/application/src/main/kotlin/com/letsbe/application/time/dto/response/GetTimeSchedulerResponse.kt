@@ -1,7 +1,7 @@
 package com.letsbe.application.time.dto.response
 
-import com.letsbe.domain.time.aggregate.ReservationDo
+import java.time.Instant
 
 data class GetTimeSchedulerResponse(
-	val reservationDo: List<ReservationDo>
+	val reservationDo: List<OpenEndRange<Instant>>
 )

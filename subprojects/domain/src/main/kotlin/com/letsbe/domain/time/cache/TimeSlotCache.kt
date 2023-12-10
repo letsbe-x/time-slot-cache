@@ -3,18 +3,25 @@ package com.letsbe.domain.time.cache
 import Constants.TimeSlot.NOT_FOUND_BIT
 import Constants.TimeSlot.SLOT_SIZE
 import Constants.TimeSlot.TIME_SLOT_UNIT_MINUTE
+import Constants.TimeSlot.TIME_SLOT_ZONE_OFFSET
 import Constants.TimeSlot.nextIndex
+import java.time.DayOfWeek
 import java.time.Duration
 import java.time.Instant
+import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
+import java.time.temporal.TemporalAdjusters
 import java.util.BitSet
 
 data class TimeSlotCache(
 	val baseTime: Instant,
 	val slot: BitSet
 ) {
-	val key: String by lazy { "time-slot:${baseTime.toEpochMilli()}" }
-	val value: BitSet = slot
+	val key: String by lazy {
+		ZonedDateTime.ofInstant(baseTime, TIME_SLOT_ZONE_OFFSET).with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY)).truncatedTo(ChronoUnit.DAYS)
+			.run { "time-slot:${toInstant()}" }
+	}
+	val value: Map<Instant, OpenEndRange<Instant>> by lazy { deserialize() }
 
 	fun isAvailable(interval: OpenEndRange<Instant>): Boolean {
 		val startIndex = calculateIndex(interval.start)
@@ -52,7 +59,7 @@ data class TimeSlotCache(
 			val startIndex = calculateIndex(timeRange.start)
 			// 끝 시간을 전 10분 간격의 시작으로 설정 (OpenEndRange이므로)
 			val endIndex = calculateIndex(timeRange.endExclusive)
-
+			// startIndex..<endIndex
 			bitSet.set(startIndex, endIndex)
 		}
 
@@ -66,5 +73,10 @@ data class TimeSlotCache(
 	private fun calculateIndex(instant: Instant): Int {
 		val duration = Duration.between(baseTime, instant)
 		return (duration.toMinutes() / TIME_SLOT_UNIT_MINUTE).toInt()
+	}
+
+	companion object {
+		fun getKey(baseTime: Instant): String = ZonedDateTime.ofInstant(baseTime, TIME_SLOT_ZONE_OFFSET).with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY)).truncatedTo(ChronoUnit.DAYS)
+			.run { "time-slot:${toInstant()}" }
 	}
 }

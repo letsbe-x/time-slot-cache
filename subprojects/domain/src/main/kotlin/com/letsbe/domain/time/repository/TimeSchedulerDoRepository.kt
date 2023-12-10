@@ -6,7 +6,7 @@ import java.time.Instant
 import java.util.Date
 
 interface TimeSchedulerDoRepository {
-	fun findByInterval(startAt: Instant, endAt: Instant): List<TimeSchedulerDo>
+	fun findByInterval(interval: OpenEndRange<Instant>): TimeSchedulerDo
 
 	fun findByDate(date: Date, excludeReservationId: ReservationId? = null): TimeSchedulerDo
 }

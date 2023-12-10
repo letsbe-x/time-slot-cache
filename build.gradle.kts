@@ -50,6 +50,9 @@ subprojects {
 		developmentOnly("org.springframework.boot:spring-boot-devtools")
 
 		testImplementation("org.springframework.boot:spring-boot-starter-test")
+
+	tasks.withType<Test> {
+		useJUnitPlatform()
 	}
 }
 
@@ -58,10 +61,6 @@ tasks.withType<KotlinCompile> {
 		freeCompilerArgs += "-Xjsr305=strict"
 		jvmTarget = "17"
 	}
-}
-
-tasks.withType<Test> {
-	useJUnitPlatform()
 }
 
 tasks.getByName<BootBuildImage>("bootBuildImage") {

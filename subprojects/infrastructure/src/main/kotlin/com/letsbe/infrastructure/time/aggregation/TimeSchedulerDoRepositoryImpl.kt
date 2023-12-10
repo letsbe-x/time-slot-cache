@@ -1,12 +1,9 @@
 package com.letsbe.infrastructure.time.aggregation
 
-import com.letsbe.domain.time.aggregate.ReservationDo
 import com.letsbe.domain.time.aggregate.ReservationId
 import com.letsbe.domain.time.aggregate.TimeSchedulerDo
 import com.letsbe.domain.time.repository.ReservationDoRepository
 import com.letsbe.domain.time.repository.TimeSchedulerDoRepository
-import com.letsbe.infrastructure.time.cache.ReservationCacheRepository
-import com.letsbe.infrastructure.time.cache.TimeSlotCacheRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import java.time.Instant
@@ -20,27 +17,14 @@ class TimeSchedulerDoRepositoryImpl : TimeSchedulerDoRepository {
 	@Autowired
 	private lateinit var reservationDoRepository: ReservationDoRepository
 
-	@Autowired
-	private lateinit var timeSlotCacheRepository: TimeSlotCacheRepository
-
-	@Autowired
-	private lateinit var reservationCacheRepository: ReservationCacheRepository
-
-	override fun findByInterval(startAt: Instant, endAt: Instant): List<TimeSchedulerDo> {
-		val dayStart = startAt.truncatedTo(ChronoUnit.DAYS)
-		val dayEnd = endAt.truncatedTo(ChronoUnit.DAYS).plus(1, ChronoUnit.DAYS)
-
-		val reservationDoList = reservationDoRepository.findByInterval(dayStart, dayEnd)
-		return reservationDoList
-			.groupBy { it.interval.start.truncatedTo(ChronoUnit.DAYS) }
-			.map { (startAt, reservationDoList) ->
-				val date = Date.from(startAt)
-				val timeSchedule = TreeMap<Instant, ReservationDo>()
-				reservationDoList.forEach {
-					timeSchedule[it.interval.start] = it
-				}
-				TimeSchedulerDo(date, timeSchedule)
+	override fun findByInterval(interval: OpenEndRange<Instant>): TimeSchedulerDo {
+		val reservationDoList = reservationDoRepository.findByInterval(interval.start, interval.endExclusive)
+		val timeSchedule = TreeMap<Instant, OpenEndRange<Instant>>()
+		reservationDoList
+			.map {
+				timeSchedule[it.interval.start] = it.interval
 			}
+		return TimeSchedulerDo(timeSchedule)
 	}
 
 	override fun findByDate(date: Date, excludeReservationId: ReservationId?): TimeSchedulerDo {
@@ -49,11 +33,11 @@ class TimeSchedulerDoRepositoryImpl : TimeSchedulerDoRepository {
 
 		val reservationDoList = reservationDoRepository.findByInterval(dayStart, dayEnd)
 
-		val timeSchedule = TreeMap<Instant, ReservationDo>()
+		val timeSchedule = TreeMap<Instant, OpenEndRange<Instant>>()
 		reservationDoList
 			.filter { it.id != excludeReservationId }
-			.forEach { timeSchedule[it.interval.start] = it }
+			.forEach { timeSchedule[it.interval.start] = it.interval }
 
-		return TimeSchedulerDo(date, timeSchedule)
+		return TimeSchedulerDo(timeSchedule)
 	}
 }

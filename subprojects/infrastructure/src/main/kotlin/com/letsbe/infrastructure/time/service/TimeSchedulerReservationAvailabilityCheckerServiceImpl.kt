@@ -5,7 +5,6 @@ import com.letsbe.domain.time.service.ReservationAvailabilityCheckerService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import java.time.Instant
-import java.util.Date
 
 @Component
 class TimeSchedulerReservationAvailabilityCheckerServiceImpl : ReservationAvailabilityCheckerService {
@@ -14,8 +13,7 @@ class TimeSchedulerReservationAvailabilityCheckerServiceImpl : ReservationAvaila
 	lateinit var timeSchedulerDoRepository: TimeSchedulerDoRepository
 
 	override fun checkAvailable(interval: OpenEndRange<Instant>): Boolean {
-		val baseTime = Date.from(interval.start)
-		val timeSchedulerDo = timeSchedulerDoRepository.findByDate(baseTime)
+		val timeSchedulerDo = timeSchedulerDoRepository.findByInterval(interval)
 		return timeSchedulerDo.isAvailable(interval)
 	}
 }

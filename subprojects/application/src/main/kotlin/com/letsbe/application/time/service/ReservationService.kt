@@ -17,13 +17,15 @@ class ReservationService {
 	@Autowired
 	lateinit var timeSchedulerDoRepository: TimeSchedulerDoRepository
 
+	@Autowired
+	lateinit var fallbackReservationAvailabilityChecker: FallbackReservationAvailabilityChecker
+
 	fun getReservation(reservationId: ReservationId): ReservationDo {
 		return reservationDoRepository.getById(reservationId)
 	}
 
 	fun createReservation(interval: OpenEndRange<Instant>): ReservationDo? {
-		// TODO: 현재는 동일 시간의 예약 가능합니다. 스펙 확장 필요
-		val timeSchedulerDo = timeSchedulerDoRepository.findByDate(Date.from(interval.start))
+		val timeSchedulerDo = timeSchedulerDoRepository.findByInterval(interval)
 		if (timeSchedulerDo.isAvailable(interval).not()) {
 			throw IllegalArgumentException("createReservation is not available")
 		}
@@ -41,7 +43,6 @@ class ReservationService {
 	}
 
 	fun updateReservation(reservationId: ReservationId, interval: OpenEndRange<Instant>): ReservationDo? {
-		// TODO: 현재는 동일 시간의 예약 가능합니다. 스펙 확장 필요
 		val timeSchedulerDo = timeSchedulerDoRepository.findByDate(Date.from(interval.start), excludeReservationId = reservationId)
 		if (timeSchedulerDo.isAvailable(interval).not()) {
 			throw IllegalArgumentException("updateReservation is not available")

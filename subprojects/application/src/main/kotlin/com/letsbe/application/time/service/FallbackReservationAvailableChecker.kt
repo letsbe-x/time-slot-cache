@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component
 import java.time.Instant
 
 @Component
-class FallbackReservationAvailabilityChecker(
+class FallbackReservationAvailableChecker(
 	private val availabilityChecker: List<ReservationAvailabilityCheckerService>
 ) {
 	fun checkAvailable(interval: OpenEndRange<Instant>): Boolean {

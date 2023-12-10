@@ -2,10 +2,8 @@ package com.letsbe.application.time.service
 
 import com.letsbe.domain.time.aggregate.ReservationDo
 import com.letsbe.domain.time.aggregate.SavedReservationDo
-import com.letsbe.domain.time.aggregate.TimeSchedulerDo
 import com.letsbe.domain.time.aggregate.UnsavedReservationDo
 import com.letsbe.domain.time.repository.ReservationDoRepository
-import com.letsbe.domain.time.repository.TimeSchedulerDoRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -29,7 +27,7 @@ class ReservationServiceTest {
 	private lateinit var reservationDoRepository: ReservationDoRepository
 
 	@Mock
-	private lateinit var timeSchedulerDoRepository: TimeSchedulerDoRepository
+	private lateinit var fallbackReservationAvailableChecker: FallbackReservationAvailableChecker
 
 	@InjectMocks
 	private lateinit var reservationService: ReservationService
@@ -52,15 +50,12 @@ class ReservationServiceTest {
 		val startInstant = Instant.now()
 		val interval = startInstant ..< startInstant.plus(1, ChronoUnit.HOURS)
 
-		val timeSchedulerDo = mock<TimeSchedulerDo>()
-		`when`(timeSchedulerDoRepository.findByInterval(interval)).thenReturn(timeSchedulerDo)
-		`when`(timeSchedulerDo.isAvailable(interval)).thenReturn(false)
+		`when`(fallbackReservationAvailableChecker.checkAvailable(interval)).thenReturn(false)
 
 		assertThrows<IllegalArgumentException> {
 			reservationService.createReservation(interval)
 		}
 
-		verify(timeSchedulerDo, times(1)).isAvailable(interval)
 		verifyNoMoreInteractions(reservationDoRepository)
 	}
 
@@ -69,18 +64,13 @@ class ReservationServiceTest {
 		val startInstant = Instant.now()
 		val interval = startInstant ..< startInstant.plus(1, ChronoUnit.HOURS)
 
-		val timeSchedulerDo = mock<TimeSchedulerDo>()
-
-		`when`(timeSchedulerDoRepository.findByInterval(interval)).thenReturn(timeSchedulerDo)
-		`when`(timeSchedulerDo.isAvailable(interval)).thenReturn(true)
+		`when`(fallbackReservationAvailableChecker.checkAvailable(interval)).thenReturn(true)
 
 		val expectedDo = mock<SavedReservationDo>()
 		`when`(reservationDoRepository.create(any(UnsavedReservationDo::class.java))).thenReturn(expectedDo)
 
 		reservationService.createReservation(interval)
 
-		verify(timeSchedulerDoRepository, times(1)).findByInterval(interval)
-		verify(timeSchedulerDo, times(1)).isAvailable(interval)
 		verify(reservationDoRepository, times(1)).create(any(UnsavedReservationDo::class.java))
 	}
 
@@ -90,29 +80,22 @@ class ReservationServiceTest {
 		val startInstant = Instant.now()
 		val interval = startInstant ..< startInstant.plus(1, ChronoUnit.HOURS)
 
-		val timeSchedulerDo = mock<TimeSchedulerDo>()
-		`when`(timeSchedulerDoRepository.findByInterval(interval, excludeReservationId = reservationId)).thenReturn(timeSchedulerDo)
-		`when`(timeSchedulerDo.isAvailable(interval)).thenReturn(false)
+		`when`(fallbackReservationAvailableChecker.checkAvailable(interval)).thenReturn(false)
 
 		assertThrows<IllegalArgumentException> {
 			reservationService.updateReservation(reservationId, interval)
 		}
 
-		verify(timeSchedulerDoRepository, times(1)).findByInterval(interval, excludeReservationId = reservationId)
-		verify(timeSchedulerDo, times(1)).isAvailable(interval)
 		verifyNoMoreInteractions(reservationDoRepository)
 	}
 
 	@Test
 	fun `updateReservation should call reservationDoRepository_update and return updated ReservationDo`() {
-		val timeSchedulerDo = mock<TimeSchedulerDo>()
-
 		val reservationId = 1L
 		val startInstant = Instant.now()
 		val interval = startInstant ..< startInstant.plus(1, ChronoUnit.HOURS)
 
-		`when`(timeSchedulerDoRepository.findByInterval(interval, excludeReservationId = reservationId)).thenReturn(timeSchedulerDo)
-		`when`(timeSchedulerDo.isAvailable(interval)).thenReturn(true)
+		`when`(fallbackReservationAvailableChecker.checkAvailable(interval)).thenReturn(true)
 
 		val reservationDo = mock<SavedReservationDo>()
 		`when`(reservationDoRepository.getById(reservationId)).thenReturn(reservationDo)
@@ -122,8 +105,6 @@ class ReservationServiceTest {
 
 		reservationService.updateReservation(reservationId, interval)
 
-		verify(timeSchedulerDoRepository, times(1)).findByInterval(interval, excludeReservationId = reservationId)
-		verify(timeSchedulerDo, times(1)).isAvailable(interval)
 		verify(reservationDoRepository, times(1)).getById(reservationId)
 		verify(reservationDoRepository, times(1)).update(any(ReservationDo::class.java))
 	}

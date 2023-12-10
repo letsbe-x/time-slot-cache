@@ -2,18 +2,3 @@
 GET /hello?searchName=Letsbe HTTP/1.1
 Host: localhost:8080
 Content-Type: application/json
-
-###
-GET /hello-cache/{{reservationId}} HTTP/1.1
-Host: localhost:8080
-Content-Type: application/json
-
-
-###
-POST /hello-cache/{{reservationId}} HTTP/1.1
-Host: localhost:8080
-Content-Type: application/json
-
-{
-    "body": "Letsbe"
-}

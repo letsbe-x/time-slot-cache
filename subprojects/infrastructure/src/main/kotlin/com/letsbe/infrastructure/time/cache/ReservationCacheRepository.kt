@@ -1,6 +1,9 @@
 package com.letsbe.infrastructure.time.cache
 
-import org.springframework.stereotype.Repository
+import com.letsbe.domain.time.cache.ReservationCache
+import java.time.Instant
+interface ReservationCacheRepository {
+	fun getReservationCache(startAt: Instant): ReservationCache
 
-@Repository
-class ReservationCacheRepository
+	fun setReservationCache(reservationCache: ReservationCache)
+}

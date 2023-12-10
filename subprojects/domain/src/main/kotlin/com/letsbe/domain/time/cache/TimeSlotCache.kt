@@ -1,5 +1,6 @@
 package com.letsbe.domain.time.cache
 
+import Constants.SLOT_SIZE
 import Constants.TIME_SLOT_UNIT_MINUTE
 import Constants.nextIndex
 import java.time.Duration
@@ -10,7 +11,8 @@ data class TimeSlotCache(
 	val baseTime: Instant,
 	val slot: BitSet
 ) {
-	private val SLOT_SIZE = (7 * 24 * 60).div(TIME_SLOT_UNIT_MINUTE) // 7일 * 24시간 * 6(10분 단위)
+	val key: String by lazy { "time-slot:${baseTime.toEpochMilli()}" }
+	val value: BitSet = slot
 
 	fun deserialize(): Map<Instant, OpenEndRange<Instant>> {
 		val timeSlots = mutableMapOf<Instant, OpenEndRange<Instant>>()

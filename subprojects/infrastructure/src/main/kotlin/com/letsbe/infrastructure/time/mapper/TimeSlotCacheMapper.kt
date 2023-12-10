@@ -1,8 +1,5 @@
 package com.letsbe.infrastructure.time.mapper
 
-import Constants.TimeSlot.DISABLE
-import Constants.TimeSlot.ENABLE
-import Constants.TimeSlot.SLOT_SIZE
 import Constants.TimeSlot.TIME_SLOT_ZONE_OFFSET
 import Constants.TimeSlot.WEEK_DAY
 import java.time.DayOfWeek
@@ -10,25 +7,8 @@ import java.time.Instant
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
 import java.time.temporal.TemporalAdjusters
-import java.util.BitSet
 
 object TimeSlotCacheMapper {
-	fun toBitSet(binaryString: String): BitSet {
-		return BitSet(SLOT_SIZE).apply {
-			binaryString.forEachIndexed { index, c ->
-				if (c == DISABLE.toInt().toChar()) set(index)
-			}
-		}
-	}
-
-	fun toBinaryString(bitSet: BitSet): String {
-		return buildString {
-			for (i in 0 until SLOT_SIZE) {
-				append(if (bitSet[i]) DISABLE else ENABLE)
-			}
-		}
-	}
-
 	fun splitByWeek(interval: OpenEndRange<Instant>): Map<Instant, OpenEndRange<Instant>> {
 		val intervalList = mutableMapOf<Instant, OpenEndRange<Instant>>()
 

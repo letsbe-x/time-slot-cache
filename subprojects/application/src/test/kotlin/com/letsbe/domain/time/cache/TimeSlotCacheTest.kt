@@ -1,6 +1,5 @@
 package com.letsbe.domain.time.cache
 
-import Constants.TimeSlot.SLOT_SIZE
 import Constants.TimeSlot.TIME_SLOT_UNIT_MINUTE
 import Constants.TimeSlot.nextIndex
 import Constants.TimeSlot.preIndex
@@ -17,7 +16,7 @@ class TimeSlotCacheTest {
 		val baseTime = Instant.parse("2023-12-10T00:00:00Z")
 		val startIndex = 60
 		val endIndex = 72.preIndex() // OpenEndRange이므로 endIndex는 전 10분 간격의 시작으로 설정
-		val bitSet = BitSet(SLOT_SIZE).apply {
+		val bitSet = BitSet().apply {
 			// 2023-12-10T10:00: ~ 2023-12-10T11:50:00까지 예약 불가능으로 설정 [예약은 2023-12-10T12:00:00부터 가능]
 			set(startIndex, endIndex)
 		}
@@ -44,7 +43,7 @@ class TimeSlotCacheTest {
 		val baseTime = Instant.parse("2023-12-10T00:00:00Z")
 		val startIndex = 60
 		val endIndex = 72.preIndex() // OpenEndRange이므로 endIndex는 전 10분 간격의 시작으로 설정
-		val bitSet = BitSet(SLOT_SIZE).apply {
+		val bitSet = BitSet().apply {
 			set(startIndex, endIndex) // 2023-12-10T10:00: ~ 2023-12-10T11:50:00까지 예약 불가능으로 설정 [예약은 2023-12-10T12:00:00부터 가능]
 		}
 		val timeSlotCache = TimeSlotCache(baseTime, bitSet)
@@ -65,7 +64,7 @@ class TimeSlotCacheTest {
 		val baseTime = Instant.parse("2023-12-10T00:00:00Z")
 		val startIndex = 60
 		val endIndex = 72.preIndex() // OpenEndRange이므로 endIndex는 전 10분 간격의 시작으로 설정
-		val bitSet = BitSet(SLOT_SIZE).apply {
+		val bitSet = BitSet().apply {
 			set(startIndex, endIndex) // 2023-12-10T10:00: ~ 2023-12-10T11:50:00까지 예약 불가능으로 설정 [예약은 2023-12-10T12:00:00부터 가능]
 		}
 		val timeSlotCache = TimeSlotCache(baseTime, bitSet)
@@ -84,10 +83,10 @@ class TimeSlotCacheTest {
 	@Test
 	fun testSerialize() {
 		val baseTime = Instant.parse("2023-12-10T00:00:00Z")
-		val timeSlotCache = TimeSlotCache(baseTime, BitSet(SLOT_SIZE))
+		val timeSlotCache = TimeSlotCache(baseTime, BitSet())
 		val expectedStartIndex = 60
 		val expectedEndIndex = 72.preIndex() // OpenEndRange이므로 endIndex는 전 10분 간격의 시작으로 설정
-		val startAt = baseTime.plus(/* amountToAdd = */ (expectedStartIndex * TIME_SLOT_UNIT_MINUTE).toLong(), /* unit = */ ChronoUnit.MINUTES) // 2023-12-10T10:00:00
+		val startAt = baseTime.plus((expectedStartIndex * TIME_SLOT_UNIT_MINUTE).toLong(), ChronoUnit.MINUTES) // 2023-12-10T10:00:00
 		val endAt = baseTime.plus(((expectedEndIndex.nextIndex()) * TIME_SLOT_UNIT_MINUTE).toLong(), ChronoUnit.MINUTES) // 2023-12-10T12:00:00
 		val timeRange = startAt ..< endAt
 

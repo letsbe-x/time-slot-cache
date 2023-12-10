@@ -1,7 +1,6 @@
 package com.letsbe.domain.time.cache
 
 import Constants.TimeSlot.NOT_FOUND_BIT
-import Constants.TimeSlot.SLOT_SIZE
 import Constants.TimeSlot.TIME_SLOT_UNIT_MINUTE
 import Constants.TimeSlot.TIME_SLOT_ZONE_OFFSET
 import Constants.TimeSlot.nextIndex
@@ -53,7 +52,7 @@ data class TimeSlotCache(
 	}
 
 	fun serialize(timeRanges: List<OpenEndRange<Instant>>): BitSet {
-		val bitSet = BitSet(SLOT_SIZE)
+		val bitSet = BitSet()
 
 		for (timeRange in timeRanges) {
 			val startIndex = calculateIndex(timeRange.start)

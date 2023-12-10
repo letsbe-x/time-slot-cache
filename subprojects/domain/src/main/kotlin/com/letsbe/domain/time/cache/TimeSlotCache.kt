@@ -2,24 +2,22 @@ package com.letsbe.domain.time.cache
 
 import Constants.TimeSlot.NOT_FOUND_BIT
 import Constants.TimeSlot.TIME_SLOT_UNIT_MINUTE
-import Constants.TimeSlot.TIME_SLOT_ZONE_OFFSET
+import Constants.TimeSlot.currentBaseTime
 import Constants.TimeSlot.nextIndex
-import java.time.DayOfWeek
 import java.time.Duration
 import java.time.Instant
-import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
-import java.time.temporal.TemporalAdjusters
 import java.util.BitSet
 
 data class TimeSlotCache(
 	val baseTime: Instant,
 	val slot: BitSet
 ) {
-	val key: String by lazy {
-		ZonedDateTime.ofInstant(baseTime, TIME_SLOT_ZONE_OFFSET).with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY)).truncatedTo(ChronoUnit.DAYS)
-			.run { "time-slot:${toInstant()}" }
+	init {
+		require(baseTime.currentBaseTime() == baseTime) { "baseTime is error" }
 	}
+
+	val key: String by lazy { "time-slot:$baseTime" }
 	val value: Map<Instant, OpenEndRange<Instant>> by lazy { deserialize() }
 
 	fun isAvailable(interval: OpenEndRange<Instant>): Boolean {
@@ -75,7 +73,6 @@ data class TimeSlotCache(
 	}
 
 	companion object {
-		fun getKey(baseTime: Instant): String = ZonedDateTime.ofInstant(baseTime, TIME_SLOT_ZONE_OFFSET).with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY)).truncatedTo(ChronoUnit.DAYS)
-			.run { "time-slot:${toInstant()}" }
+		fun getKey(baseTime: Instant): String = baseTime.currentBaseTime().run { "time-slot:$this" }
 	}
 }

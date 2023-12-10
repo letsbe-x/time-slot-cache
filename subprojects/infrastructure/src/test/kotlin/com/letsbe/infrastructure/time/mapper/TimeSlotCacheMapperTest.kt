@@ -1,25 +1,23 @@
 package com.letsbe.infrastructure.time.mapper
 
-import Constants.TimeSlot.TIME_SLOT_ZONE_OFFSET
+import Constants.TimeSlot.currentBaseTime
+import Constants.TimeSlot.nextBaseTime
 import com.letsbe.infrastructure.time.mapper.TimeSlotCacheMapper.splitByWeek
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import java.time.DayOfWeek
 import java.time.Instant
-import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
-import java.time.temporal.TemporalAdjusters
 
 class TimeSlotCacheMapperTest {
 	@Test
 	fun `splitByWeek should split single week interval correctly`() {
-		val now = Instant.parse("2023-12-10T00:00:00Z")
-		val sunday = ZonedDateTime.ofInstant(now, TIME_SLOT_ZONE_OFFSET).with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY)).toInstant()
-		val nextSunday = ZonedDateTime.ofInstant(now, TIME_SLOT_ZONE_OFFSET).with(TemporalAdjusters.next(DayOfWeek.SUNDAY)).toInstant()
+		val currentTime = Instant.parse("2023-12-10T00:00:00Z")
+		val sunday = currentTime.currentBaseTime()
+		val nextSunday = currentTime.nextBaseTime()
 		val interval = sunday..<nextSunday
 
 		val expectedMap = mapOf(
-			now to interval
+			currentTime to interval
 		)
 
 		val actualMap = splitByWeek(interval)
@@ -29,14 +27,14 @@ class TimeSlotCacheMapperTest {
 
 	@Test
 	fun `splitByWeek should split multiple week interval correctly`() {
-		val now = Instant.parse("2023-12-10T00:00:00Z")
-		val sunday = ZonedDateTime.ofInstant(now, TIME_SLOT_ZONE_OFFSET).with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY)).toInstant()
-		val nextSunday = ZonedDateTime.ofInstant(now, TIME_SLOT_ZONE_OFFSET).with(TemporalAdjusters.next(DayOfWeek.SUNDAY)).toInstant()
+		val currentTime = Instant.parse("2023-12-10T00:00:00Z")
+		val sunday = currentTime.currentBaseTime()
+		val nextSunday = currentTime.nextBaseTime()
 		val nextNextSunday = nextSunday.plus(7, ChronoUnit.DAYS)
 		val interval = sunday..<nextNextSunday
 
 		val expectedMap = mapOf(
-			now to sunday..<nextSunday,
+			sunday to sunday..<nextSunday,
 			nextSunday to nextSunday..<nextNextSunday
 		)
 
@@ -51,8 +49,8 @@ class TimeSlotCacheMapperTest {
 		val endAt = Instant.parse("2023-12-16T12:00:00Z")
 
 		val interval = startAt..<endAt
-		val baseTime = ZonedDateTime.ofInstant(startAt, TIME_SLOT_ZONE_OFFSET).with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY)).truncatedTo(ChronoUnit.DAYS).toInstant()
-		val nextBaseTime = ZonedDateTime.ofInstant(endAt, TIME_SLOT_ZONE_OFFSET).with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY)).truncatedTo(ChronoUnit.DAYS).toInstant()
+		val baseTime = startAt.currentBaseTime()
+		val nextBaseTime = startAt.nextBaseTime()
 
 		val expectedMap = mapOf(
 			baseTime to startAt..<nextBaseTime,

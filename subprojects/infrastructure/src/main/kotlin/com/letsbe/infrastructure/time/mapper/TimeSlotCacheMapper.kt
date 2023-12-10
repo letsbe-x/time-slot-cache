@@ -2,6 +2,7 @@ package com.letsbe.infrastructure.time.mapper
 
 import Constants.TimeSlot.TIME_SLOT_ZONE_OFFSET
 import Constants.TimeSlot.WEEK_DAY
+import Constants.TimeSlot.currentBaseTime
 import java.time.DayOfWeek
 import java.time.Instant
 import java.time.ZonedDateTime
@@ -15,9 +16,7 @@ object TimeSlotCacheMapper {
 		val startAt = interval.start
 		val endAt = interval.endExclusive
 
-		var current = ZonedDateTime.ofInstant(interval.start, TIME_SLOT_ZONE_OFFSET)
-			.with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY))
-			.truncatedTo(ChronoUnit.DAYS)
+		var current = ZonedDateTime.ofInstant(startAt.currentBaseTime(), TIME_SLOT_ZONE_OFFSET)
 		while (current.toInstant().isBefore(endAt)) {
 			val baseTime = current.with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY)).toInstant()
 			val start = maxOf(startAt, baseTime)

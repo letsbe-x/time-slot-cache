@@ -46,7 +46,7 @@ subprojects {
 
 		runtimeOnly("org.jetbrains.kotlin:kotlin-reflect") // reflection
 
-// 		developmentOnly("org.springframework.boot:spring-boot-docker-compose")
+		developmentOnly("org.springframework.boot:spring-boot-docker-compose")
 		developmentOnly("org.springframework.boot:spring-boot-devtools")
 
 		testImplementation("org.springframework.boot:spring-boot-starter-test")

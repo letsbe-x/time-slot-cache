@@ -5,6 +5,8 @@ import com.letsbe.domain.time.aggregate.ReservationId
 import com.letsbe.domain.time.aggregate.TimeSchedulerDo
 import com.letsbe.domain.time.repository.ReservationDoRepository
 import com.letsbe.domain.time.repository.TimeSchedulerDoRepository
+import com.letsbe.infrastructure.time.cache.ReservationCacheRepository
+import com.letsbe.infrastructure.time.cache.TimeSlotCacheRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import java.time.Instant
@@ -17,6 +19,12 @@ class TimeSchedulerDoRepositoryImpl : TimeSchedulerDoRepository {
 
 	@Autowired
 	private lateinit var reservationDoRepository: ReservationDoRepository
+
+	@Autowired
+	private lateinit var timeSlotCacheRepository: TimeSlotCacheRepository
+
+	@Autowired
+	private lateinit var reservationCacheRepository: ReservationCacheRepository
 
 	override fun findByInterval(startAt: Instant, endAt: Instant): List<TimeSchedulerDo> {
 		val dayStart = startAt.truncatedTo(ChronoUnit.DAYS)

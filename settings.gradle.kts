@@ -1,4 +1,4 @@
-rootProject.name = "letsbe-spring-template"
+rootProject.name = "time-slot-cache"
 
 include(":domain", ":application", ":infrastructure")
 

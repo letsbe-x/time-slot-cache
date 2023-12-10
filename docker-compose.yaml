@@ -3,6 +3,22 @@ version: "3"
 networks:
     spring-docker-network:
         driver: bridge
+services:
+    redis:
+        container_name: redis
+        image: redis
+        ports:
+            - 6379:6379
+        networks:
+            - spring-docker-network
+#    app:
+#        build: .
+#        ports:
+#            - 8080:8080
+#        depends_on:
+#            - redis
+#        networks:
+#            - spring-docker-network
 
 #services:
 #    app:

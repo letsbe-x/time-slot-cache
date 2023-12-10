@@ -2,6 +2,8 @@ package com.letsbe.infrastructure.time.aggregation
 
 import com.letsbe.domain.time.aggregate.ReservationDo
 import com.letsbe.domain.time.aggregate.ReservationId
+import com.letsbe.domain.time.aggregate.SavedReservationDo
+import com.letsbe.domain.time.aggregate.UnsavedReservationDo
 import com.letsbe.domain.time.repository.ReservationDoRepository
 import com.letsbe.infrastructure.time.cache.TimeSlotCacheRepository
 import com.letsbe.infrastructure.time.cache.impl.TimeSlotCacheRepositoryImpl.EnumCacheUpdateMethod
@@ -21,19 +23,20 @@ class ReservationDoRepositoryImpl : ReservationDoRepository {
 	@Autowired
 	private lateinit var timeSlotCacheRepository: TimeSlotCacheRepository
 
-	override fun getById(reservationId: ReservationId): ReservationDo {
+	override fun getById(reservationId: ReservationId): SavedReservationDo {
 		return reservationEntityRepository.findById(reservationId)
 			.orElseThrow { NoSuchElementException("Reservation not found with id: $reservationId") }
 			.run(ReservationMapper::toDo)
 	}
 
-	override fun findByInterval(startAt: Instant, endAt: Instant): List<ReservationDo> {
+	override fun findByInterval(startAt: Instant, endAt: Instant): List<SavedReservationDo> {
 		val reservationEntityList = reservationEntityRepository.findReservationsOverlappingWithDay(startAt, endAt)
 
 		return reservationEntityList.map(ReservationMapper::toDo)
 	}
 
-	override fun create(reservationDo: ReservationDo): ReservationDo {
+	override fun create(unsavedReservationDo: UnsavedReservationDo): SavedReservationDo {
+		val reservationDo = unsavedReservationDo.toDo()
 		return reservationEntityRepository.save(ReservationMapper.toEntity(reservationDo))
 			.run(ReservationMapper::toDo)
 			.also {
@@ -61,7 +64,7 @@ class ReservationDoRepositoryImpl : ReservationDoRepository {
 			}
 	}
 
-	override fun update(reservationDo: ReservationDo): ReservationDo {
+	override fun update(reservationDo: ReservationDo): SavedReservationDo {
 		val reservationId = reservationDo.id
 
 		val reservationEntity = reservationEntityRepository.findById(reservationId!!)

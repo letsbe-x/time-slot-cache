@@ -1,11 +1,12 @@
 package com.letsbe.infrastructure.time.mapper
 
 import com.letsbe.domain.time.aggregate.ReservationDo
+import com.letsbe.domain.time.aggregate.SavedReservationDo
 import com.letsbe.infrastructure.time.entity.ReservationEntity
 
 object ReservationMapper {
-	fun toDo(reservationEntity: ReservationEntity): ReservationDo {
-		return ReservationDo.create(
+	fun toDo(reservationEntity: ReservationEntity): SavedReservationDo {
+		return SavedReservationDo.create(
 			id = reservationEntity.id!!,
 			interval = reservationEntity.startAt ..< reservationEntity.endAt
 		)

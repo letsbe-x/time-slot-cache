@@ -16,9 +16,10 @@ class TimeScheduleController(
 		getTimeSchedulerRequest: GetTimeSchedulerRequest
 	): ResponseEntity<GetTimeSchedulerResponse> {
 		val (requestDate) = getTimeSchedulerRequest
-		val result = timeSchedulerService.getTimeScheduler(requestDate)
 		return ResponseEntity.ok(
-			GetTimeSchedulerResponse(result)
+			GetTimeSchedulerResponse(
+				timeSchedulerService.getTimeScheduler(requestDate)
+			)
 		)
 	}
 }

@@ -3,6 +3,7 @@ dependencies {
 
 allOpen {
 	annotation("javax.persistence.Entity")
+	annotation("com.letsbe.domain.annotation.AllOpen")
 }
 
 tasks {

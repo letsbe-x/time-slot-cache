@@ -17,10 +17,11 @@ class TimeSchedulerDoRepositoryImpl : TimeSchedulerDoRepository {
 	@Autowired
 	private lateinit var reservationDoRepository: ReservationDoRepository
 
-	override fun findByInterval(interval: OpenEndRange<Instant>): TimeSchedulerDo {
+	override fun findByInterval(interval: OpenEndRange<Instant>, excludeReservationId: ReservationId?): TimeSchedulerDo {
 		val reservationDoList = reservationDoRepository.findByInterval(interval.start, interval.endExclusive)
 		val timeSchedule = TreeMap<Instant, OpenEndRange<Instant>>()
 		reservationDoList
+			.filter { it.id != excludeReservationId }
 			.map {
 				timeSchedule[it.interval.start] = it.interval
 			}

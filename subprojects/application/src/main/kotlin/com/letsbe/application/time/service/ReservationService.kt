@@ -35,6 +35,11 @@ class ReservationService {
 		return reservationDoRepository.create(newReservationDo)
 	}
 
+	fun isAvailable(interval: OpenEndRange<Instant>): Boolean {
+		val timeSchedulerDo = timeSchedulerDoRepository.findByDate(Date.from(interval.start))
+		return timeSchedulerDo.isAvailable(interval).not()
+	}
+
 	fun updateReservation(reservationId: ReservationId, interval: OpenEndRange<Instant>): ReservationDo? {
 		// TODO: 현재는 동일 시간의 예약 가능합니다. 스펙 확장 필요
 		val timeSchedulerDo = timeSchedulerDoRepository.findByDate(Date.from(interval.start), excludeReservationId = reservationId)

@@ -1,7 +1,9 @@
 package com.letsbe.application.time.controller
 
+import com.letsbe.application.time.dto.request.CheckAvailableReservationRequest
 import com.letsbe.application.time.dto.request.CreateReservationRequest
 import com.letsbe.application.time.dto.request.UpdateReservationRequest
+import com.letsbe.application.time.dto.response.CheckAvailableReservationResponse
 import com.letsbe.application.time.service.ReservationService
 import com.letsbe.domain.time.aggregate.ReservationDo
 import com.letsbe.domain.time.aggregate.ReservationId
@@ -25,6 +27,21 @@ class ReservationController(
 	): ResponseEntity<ReservationDo> {
 		return ResponseEntity.ok(
 			reservationService.getReservation(reservationId)
+		)
+	}
+
+	@GetMapping("/reservation/available")
+	fun isAvailable(
+		checkAvailableReservationRequest: CheckAvailableReservationRequest
+	): ResponseEntity<CheckAvailableReservationResponse> {
+		val interval = with(checkAvailableReservationRequest) {
+			startAt ..< endAt
+		}
+
+		return ResponseEntity.ok(
+			CheckAvailableReservationResponse(
+				isAvailable = reservationService.isAvailable(interval)
+			)
 		)
 	}
 

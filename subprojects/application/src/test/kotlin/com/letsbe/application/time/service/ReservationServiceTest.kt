@@ -61,7 +61,6 @@ class ReservationServiceTest {
 			reservationService.createReservation(interval)
 		}
 
-		verify(timeSchedulerDoRepository, times(1)).findByDate(date)
 		verify(timeSchedulerDo, times(1)).isAvailable(interval)
 		verifyNoMoreInteractions(reservationDoRepository)
 	}

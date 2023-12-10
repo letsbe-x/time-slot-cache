@@ -42,7 +42,10 @@ class ReservationService {
 		return timeSchedulerDo.isAvailable(interval).not()
 	}
 
-	fun updateReservation(reservationId: ReservationId, interval: OpenEndRange<Instant>): SavedReservationDo? {
+	fun updateReservation(
+		reservationId: ReservationId,
+		interval: OpenEndRange<Instant>
+	): SavedReservationDo? {
 		val timeSchedulerDo = timeSchedulerDoRepository.findByInterval(interval, excludeReservationId = reservationId)
 		if (timeSchedulerDo.isAvailable(interval).not()) {
 			throw IllegalArgumentException("updateReservation is not available")

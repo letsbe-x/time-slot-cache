@@ -15,10 +15,12 @@ class TimeScheduleController(
 	fun getTimeScheduler(
 		getTimeSchedulerRequest: GetTimeSchedulerRequest
 	): ResponseEntity<GetTimeSchedulerResponse> {
-		val (requestDate) = getTimeSchedulerRequest
+		val interval = with(getTimeSchedulerRequest) {
+			startAt ..< endAt
+		}
 		return ResponseEntity.ok(
 			GetTimeSchedulerResponse(
-				timeSchedulerService.getTimeScheduler(requestDate)
+				timeSchedulerService.getTimeScheduler(interval)
 			)
 		)
 	}

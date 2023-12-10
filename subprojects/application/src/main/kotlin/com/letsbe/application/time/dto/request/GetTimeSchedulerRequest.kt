@@ -1,9 +1,8 @@
 package com.letsbe.application.time.dto.request
 
-import org.springframework.format.annotation.DateTimeFormat
-import java.util.Date
+import java.time.Instant
 
 data class GetTimeSchedulerRequest(
-	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-	val date: Date
+	val startAt: Instant,
+	val endAt: Instant
 )

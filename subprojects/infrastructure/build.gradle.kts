@@ -1,5 +1,4 @@
 dependencies {
-// 	compileOnly(project(":domain"))
 	api(project(":domain"))
 	runtimeOnly("com.h2database:h2")
 	implementation("org.springframework.boot:spring-boot-starter-data-redis")

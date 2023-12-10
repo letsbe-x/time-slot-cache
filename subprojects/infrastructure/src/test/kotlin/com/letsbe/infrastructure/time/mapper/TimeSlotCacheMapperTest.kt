@@ -51,8 +51,8 @@ class TimeSlotCacheMapperTest {
 		val endAt = Instant.parse("2023-12-16T12:00:00Z")
 
 		val interval = startAt..<endAt
-		val baseTime = ZonedDateTime.ofInstant(startAt, TIME_SLOT_ZONE_OFFSET).with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY)).toInstant()
-		val nextBaseTime = ZonedDateTime.ofInstant(endAt, TIME_SLOT_ZONE_OFFSET).with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY)).toInstant()
+		val baseTime = ZonedDateTime.ofInstant(startAt, TIME_SLOT_ZONE_OFFSET).with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY)).truncatedTo(ChronoUnit.DAYS).toInstant()
+		val nextBaseTime = ZonedDateTime.ofInstant(endAt, TIME_SLOT_ZONE_OFFSET).with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY)).truncatedTo(ChronoUnit.DAYS).toInstant()
 
 		val expectedMap = mapOf(
 			baseTime to startAt..<nextBaseTime,

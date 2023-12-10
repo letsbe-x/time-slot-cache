@@ -2,6 +2,7 @@ package com.letsbe.infrastructure.time.aggregation
 
 import com.letsbe.domain.time.aggregate.ReservationDo
 import com.letsbe.infrastructure.AbstractRepositoryTest
+import com.letsbe.infrastructure.time.cache.TimeSlotCacheRepository
 import com.letsbe.infrastructure.time.entity.ReservationEntity
 import com.letsbe.infrastructure.time.mapper.ReservationMapper
 import com.letsbe.infrastructure.time.repository.ReservationEntityRepository
@@ -24,6 +25,9 @@ class ReservationDoRepositoryImplTest : AbstractRepositoryTest() {
 
 	@Mock
 	private lateinit var reservationEntityRepository: ReservationEntityRepository
+
+	@Mock
+	private lateinit var timeSlotCacheRepository: TimeSlotCacheRepository
 
 	@Test
 	fun `getById should return reservation when it exists`() {
